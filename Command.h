@@ -7,5 +7,6 @@ class Command
 		string output_;
 		vector<string> coeff_;
 		int type;
-		Command():type(0){};
+		bool is_background;
+		Command():type(0),is_background(false){};
 };

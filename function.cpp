@@ -106,7 +106,18 @@ bool Parser(vector<string> &words,vector<Command> &cmds)
 			}
 			else if (words(iter) == "&")
 			{
-				
+				for (size_t kk = 0; kk < cmds.size(); kk++)
+				{
+					cmds(kk).is_background = true;
+				}
+				cmd->is_background = true;
+				iter = words.size();
+				break;
+			}
+			else
+			{
+				arg_list.push_back(words(iter));
+				iter++;
 			}
 		}
 
