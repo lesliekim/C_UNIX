@@ -131,13 +131,53 @@ bool Parser(vector<string> &words,vector<Command> &cmds)
 	return true;
 }
 
+bool Execute(vector<Command> &cmds)
+{
+	if (cmds.empty())
+	{
+		return true;
+	}
+	
+	CmdExe cmds_exe;
+	size_t pipe_num = cmds.size();
+	int **fd = new int*[pipe_num];
+	for (int i = 0; i < pipe_num; i++)
+	{
+		fd[i] = new int[2];
+		pipe(fd[i]);
+	}
+	
+	for (size_t iter = cmds.begin(); iter < cmds.end(); iter++)
+	{
+		int pid = fork();
+		if (pid > 0)// parent
+		{
+			
+		}
+		else if()
+		{
+		}
+		else
+		{
+		}
+	}
+}
+
 void PrintWords()
 {
 }
 
 void PrintCmd(Command &cmd)
 {
-	printf("%s ", cmd->name_.c_str());
+	printf("name: %s \n", cmd->name_.c_str());
+	printf("input: %s \n", cmd->input_.c_str());
+	printf("output: %s \n", cmd->output_.c_str());
+	printf("is background execution: %d \n", cmd->is_background);
+	for (int i = 0; i < cmd->coeff_.size(); i++)
+	{
+		printf("%s \n", cmd->coeff_(i).c_str());
+	}
+	/*
 	if ((cmd->input_ != "stdin") && (cmd->input_ != "pipe"))
 	{
 		printf("< %s ", cmd->input_.c_str());
@@ -146,4 +186,5 @@ void PrintCmd(Command &cmd)
 	{
 		if (cmd->output_ == "pipe")
 	}
+	*/
 }
