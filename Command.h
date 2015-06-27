@@ -10,3 +10,9 @@ class Command
 		bool is_background;
 		Command():type(0),is_background(false){};
 };
+
+class CmdExe
+{
+	vector<int> pid_list_;
+	int status_;
+};
