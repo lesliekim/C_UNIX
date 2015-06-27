@@ -43,14 +43,14 @@ bool Parser(vector<string> &words,vector<Command> &cmds)
 		cmd = new Command;
 		if (arg_list.empty())
 		{
-			cmd->input = "stdin";
+			cmd->input_ = "stdin";
 		}
 		else
 		{
-			cmd->input = "pipe"
+			cmd->input_ = "pipe"
 		}
-		cmd->output = "stdout";
-		cmd->name = words(iter);
+		cmd->output_ = "stdout";
+		cmd->name_ = words(iter);
 		arg_list.push_back(words(iter));
 		iter++;
 
@@ -71,7 +71,7 @@ bool Parser(vector<string> &words,vector<Command> &cmds)
 				}
 				else
 				{
-					cmd->input = words(iter);
+					cmd->input_ = words(iter);
 				}
 				iter++;
 			}
@@ -90,14 +90,14 @@ bool Parser(vector<string> &words,vector<Command> &cmds)
 				}
 				else
 				{
-					cmd->output = words(iter);
+					cmd->output_ = words(iter);
 				}
 				iter++;
 
 			}
 			else if (words(iter) == "|")// pipe
 			{
-				cmd->output = "pipe";
+				cmd->output_ = "pipe";
 				iter++;
 				if (iter == words.size() || words(iter) != "&")
 				{
@@ -121,6 +121,29 @@ bool Parser(vector<string> &words,vector<Command> &cmds)
 			}
 		}
 
+		for (size_t i = 0; i < arg_list.size(); i++)
+		{
+			cmd->coeff_.push_back(arg_list(i));
+		}
+		cmds.push_back(cmd);
+		arg_list.clear();
 	}
+	return true;
+}
 
+void PrintWords()
+{
+}
+
+void PrintCmd(Command &cmd)
+{
+	printf("%s ", cmd->name_.c_str());
+	if ((cmd->input_ != "stdin") && (cmd->input_ != "pipe"))
+	{
+		printf("< %s ", cmd->input_.c_str());
+	}
+	if (cmd->output_ != "stdout")
+	{
+		if (cmd->output_ == "pipe")
+	}
 }
