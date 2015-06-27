@@ -1,4 +1,10 @@
 #include <cstdio>
+#include <string>
+#include <cstring>
+#include <vector>
+
+using std::string;
+using std::vector;
 class Command
 {
 	public:

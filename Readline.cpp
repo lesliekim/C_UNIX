@@ -1,3 +1,4 @@
+#include <Readline.h>
 static char* line_read = NULL;
 char* ReadLine()
 {
