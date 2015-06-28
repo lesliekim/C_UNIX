@@ -50,12 +50,15 @@ bool Parser(vector<string> &words,vector<Command> &cmds)
 		if (cmds.empty())
 		{
 			cmd.input_ = "stdin";
+			cmd.i_type_ = 0;
 		}
 		else
 		{
 			cmd.input_ = "pipe";
+			cmd.i_type_ = 1;
 		}
 		cmd.output_ = "stdout";
+		cmd.o_type_ = 0;
 		cmd.name_ = words[iter];
 		arg_list.push_back(words[iter]);
 		iter++;
@@ -78,6 +81,7 @@ bool Parser(vector<string> &words,vector<Command> &cmds)
 				else
 				{
 					cmd.input_ = words[iter];
+					cmd.i_type_ = 2;
 				}
 				iter++;
 			}
@@ -97,6 +101,7 @@ bool Parser(vector<string> &words,vector<Command> &cmds)
 				else
 				{
 					cmd.output_ = words[iter];
+					cmd.o_type_ = 2;
 				}
 				iter++;
 
@@ -104,6 +109,7 @@ bool Parser(vector<string> &words,vector<Command> &cmds)
 			else if (words[iter] == "|")// pipe
 			{
 				cmd.output_ = "pipe";
+				cmd.o_type_ = 1;
 				iter++;
 				if (iter == words.size() || words[iter] != "&")
 				{
@@ -140,7 +146,7 @@ bool Parser(vector<string> &words,vector<Command> &cmds)
 	}
 	return true;
 }
-/*
+
 bool Execute(vector<Command> &cmds)
 {
 	if (cmds.empty())
@@ -148,8 +154,7 @@ bool Execute(vector<Command> &cmds)
 		return true;
 	}
 	
-	CmdExe cmds_exe;
-	size_t pipe_num = cmds.size();
+	size_t pipe_num = cmds.size() - 1;
 	int **fd = new int*[pipe_num];
 	for (size_t i = 0; i < pipe_num; i++)
 	{
@@ -157,22 +162,105 @@ bool Execute(vector<Command> &cmds)
 		pipe(fd[i]);
 	}
 	
-	for (size_t iter = 0; iter < cmds.size(); iter++)
+	vector<int> pid_list;
+	for (int iter = (int)(cmds.size() - 1); iter >= 0; iter--)
 	{
 		int pid = fork();
 		if (pid > 0)// parent
 		{
-			
+			pid_list.push_back(pid);
 		}
-		else if()
+		else if(pid == 0)
 		{
+			
+			if (cmds[iter].i_type_ == 1)// pipe	
+			{
+				dup2(fd[iter - 1][0], STDIN_FILENO);
+				fprintf(stderr,"command %s duplicate pipe to stdin\n", cmds[iter].name_.c_str());
+			}
+			else if (cmds[iter].i_type_ == 2)// file
+			{
+				int fid = open(cmds[iter].input_.c_str(), O_RDONLY);
+				if (fid == -1)
+				{
+					fprintf(stderr,"Open file %s error!\n", cmds[iter].input_.c_str());
+					exit(-1);
+				}
+				dup2(fid, STDIN_FILENO);
+				close(fid);
+				fprintf(stderr,"command %s duplicate %s to stdin\n", cmds[iter].name_.c_str(),cmds[iter].input_.c_str());
+				
+			}
+			
+			if (cmds[iter].o_type_ == 1)// pipe	
+			{
+				dup2(fd[iter][1], STDOUT_FILENO);
+				fprintf(stderr,"command %s duplicate pipe to stdout\n", cmds[iter].name_.c_str());
+			}
+			else if (cmds[iter].o_type_ == 2)// file
+			{
+				int fid = open(cmds[iter].output_.c_str(), O_WRONLY | O_CREAT | O_TRUNC, 0664);
+				if (fid == -1)
+				{
+					fprintf(stderr,"Open file %s error!\n", cmds[iter].output_.c_str());
+					exit(-1);
+				}
+				dup2(fid, STDOUT_FILENO);
+				close(fid);
+				fprintf(stderr,"command %s duplicate %s to stdout\n", cmds[iter].name_.c_str(),cmds[iter].output_.c_str());
+				
+			}
+			
+			for (size_t j = 0; j < pipe_num; j++)// close all pipe
+			{
+				close(fd[j][0]);
+				close(fd[j][1]);
+			}
+			
+			char* argv[cmds[iter].coeff_.size() + 1];
+			for (size_t j = 0; j < cmds[iter].coeff_.size(); j++)
+			{
+				argv[j] = (char*)(cmds[iter].coeff_[j].c_str());
+			}
+			argv[cmds[iter].coeff_.size()] = NULL;
+			int flag = execvp(cmds[iter].name_.c_str(),argv);
+			if (flag == -1)
+			{
+				fprintf(stderr,"command %s execution error:%s!\n",cmds[iter].name_.c_str(), strerror(errno));
+			}
+			exit(-1);		
+		
 		}
 		else
 		{
+			fprintf(stderr, "Fork failed!\n");
+			return false;
 		}
+		
 	}
+	// parent
+	for (size_t j = 0; j < pipe_num; j++)
+	{
+		close(fd[j][0]);
+		close(fd[j][1]);
+	}
+	
+	// execution
+	for (size_t i = 0; i < pid_list.size(); i++)
+	{
+		int status;
+		int val = waitpid(pid_list[i], &status,0);
+		if (val <= 0)
+		{
+			fprintf(stderr,"error while wait for pid:%d\n",pid_list[i]);
+		}
+		
+	}
+	
+	delete []fd;
+	return true;
 }
-*/
+
 void PrintWords(vector<string> &words)
 {
 	for (size_t i = 0; i < words.size(); i++)
