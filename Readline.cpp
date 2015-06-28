@@ -1,19 +1,42 @@
-#include <Readline.h>
-static char* line_read = NULL;
-char* ReadLine()
-{
-	char cache[2000];
-	if(line_read)
-	{
-		free(line_read);
-		line_read = NULL;
-	}
+#include "Readline.h"
+#include <unistd.h>
+#include <string>
+#include <readline/readline.h>
+#include <readline/history.h>
 
-	snprintf(cache, sizeof(cache), "%s@rabbit:%s$ ", getenv("USER"), getcwd(NULL,1000));
-	line_read = readline(cache);
-	if (line_read && *line_read)
-	{
-		add_history(line_read);
-	}
-	return(line_read);
+using std::string;
+
+
+Readline::Readline(): line_read_(NULL)
+{
 }
+
+Readline::~Readline()
+{
+    if (line_read_)
+    {
+        free(line_read_);
+    }
+}
+
+char* Readline::rl_gets()
+{
+    if (line_read_)
+    {
+        free(line_read_);
+        line_read_ = NULL;
+    }
+
+    string shell_prompt;
+	shell_prompt = getenv("USER") + string("@") + "rabbit:"
+            + getcwd(NULL, 1000) + "$ ";
+    line_read_ = readline(shell_prompt.c_str());
+
+    if (line_read_ && *line_read_)
+    {
+        add_history(line_read_);
+    }
+
+    return line_read_;
+}
+

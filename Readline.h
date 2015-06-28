@@ -1,8 +1,14 @@
-#pragma once
-#include <readline/readline.h>
-#include <readline/history.h>
-#include <stdlib.h>
-#include <stdio.h>
-#include <unistd.h>
+#include <string>
+#include <vector>
 
-char* ReadLine();
+class Readline
+{
+public:
+    Readline();
+    ~Readline();
+    char* rl_gets();
+    char *line_read_;
+};
+
+
+

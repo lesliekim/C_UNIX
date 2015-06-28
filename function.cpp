@@ -37,6 +37,7 @@ bool Lexer(const string &str_, vector<string> &words)
 			pos_pre++;
 		}
 	}
+	//PrintWords(words);
 	return true;
 }
 
@@ -46,7 +47,7 @@ bool Parser(vector<string> &words,vector<Command> &cmds)
 	for (size_t iter = 0; iter < words.size(); )
 	{
 		Command cmd;
-		if (arg_list.empty())
+		if (cmds.empty())
 		{
 			cmd.input_ = "stdin";
 		}
@@ -133,6 +134,10 @@ bool Parser(vector<string> &words,vector<Command> &cmds)
 		cmds.push_back(cmd);
 		arg_list.clear();
 	}
+	for (size_t j = 0; j < cmds.size(); j++)
+	{
+		PrintCmd(cmds[j]);
+	}
 	return true;
 }
 /*
@@ -168,8 +173,13 @@ bool Execute(vector<Command> &cmds)
 	}
 }
 */
-void PrintWords()
+void PrintWords(vector<string> &words)
 {
+	for (size_t i = 0; i < words.size(); i++)
+	{
+		printf("%s ",words[i].c_str());
+	}
+	printf("\n");
 }
 
 void PrintCmd(Command &cmd)

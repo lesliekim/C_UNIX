@@ -2,21 +2,23 @@
 #include <string>
 #include <cstring>
 #include <vector>
-#include <readline/readline.h>
-#include <readline/history.h>
 #include <function.h>
-#include <Readline.h>
+#include "Readline.h"
+
 
 
 using std::string;
 using std::vector;
 int main()
 {
+	Readline handler;
+    
 	while(1)
 	{
 		vector<string> words;
 		vector<Command> cmds;
-		string cmd_line = string(ReadLine());
+		
+		string cmd_line = string(handler.rl_gets());
 		if (cmd_line == "")
 		{
 			printf("\n");
