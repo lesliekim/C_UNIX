@@ -18,19 +18,20 @@ int main()
 		vector<string> words;
 		vector<Command> cmds;
 		
-		string cmd_line = string(handler.rl_gets());
-		if (cmd_line == "")
+		char *result = handler.rl_gets();
+		if (result == NULL)
 		{
 			printf("\n");
 			break;
 		}
 		else
 		{
+			string cmd_line = string(result);
 			if (Lexer(cmd_line, words))
 			{
 				if (Parser(words,cmds))
 				{
-
+					Execute(cmds);
 				}
 				else
 				{

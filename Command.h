@@ -12,9 +12,10 @@ class Command
 		string input_;
 		string output_;
 		vector<string> coeff_;
-		int type;
+		int i_type_;
+		int o_type_;
 		bool is_background;
-		Command():type(0),is_background(false){};
+		Command():i_type_(0),o_type_(0),is_background(false){};
 };
 
 class CmdExe
