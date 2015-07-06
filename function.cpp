@@ -263,7 +263,7 @@ bool Execute(vector<Command> &cmds, string &cmd_line)
 			int val = waitpid(fg_job_.pid_list_[i], &status,0);
 			if (val <= 0)
 			{
-				fprintf(stderr,"error while wait for pid:%d\n",pid_list[i]);
+				fprintf(stderr,"error while wait for pid:%d\n",fg_job_.pid_list_[i]);
 			}
 		}
 		fg_job_.pid_list_.clear();
