@@ -19,12 +19,13 @@ class Command
 		bool is_background;
 		Command():i_type_(0),o_type_(0),is_background(false){};
 };
-typedef enum JobStatus
+/*typedef enum JobStatus
 {
 	Running =  0,
 	Stopped =  1,
 	Finished =  2
 };
+*/
 class Job
 {
 public:
