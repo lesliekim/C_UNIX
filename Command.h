@@ -28,7 +28,7 @@ typedef enum JobStatus
 class Job
 {
 public:
-	list<int> pid_list_;
+	vector<int> pid_list_;
 	int status_;
 	string content_;
 	Job():status_(0){};

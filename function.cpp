@@ -300,7 +300,7 @@ void CheckBackgroundList()
 				{
 					fprintf(stderr,"waitpid error\n");
 				}
-				job.pid_list_.pop_front();
+				job.pid_list_.erase(job.pid_list_.begin());
 			}
 			if (job.pid_list_.empty())
 			{
