@@ -1,5 +1,6 @@
 #include <function.h>
-
+extern Job fg_job_;
+extern list<Job> bg_job_;
 
 bool Lexer(const string &str_, vector<string> &words)
 {
