@@ -31,7 +31,8 @@ int main()
 			{
 				if (Parser(words,cmds))
 				{
-					Execute(cmds);
+					Execute(cmds, cmd_line);
+					CheckBackgroundList();
 				}
 				else
 				{
