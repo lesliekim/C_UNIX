@@ -18,8 +18,16 @@ class Command
 		Command():i_type_(0),o_type_(0),is_background(false){};
 };
 
-class CmdExe
+class Job
 {
 	vector<int> pid_list_;
 	int status_;
+	string name_;
+};
+
+typedef enum JobStatus
+{
+	Running =  0,
+	Stopped =  1,
+	Finished =  2
 };
