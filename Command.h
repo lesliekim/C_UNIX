@@ -2,9 +2,11 @@
 #include <string>
 #include <cstring>
 #include <vector>
+#include <list>
 
 using std::string;
 using std::vector;
+using std::list;
 class Command
 {
 	public:
@@ -26,7 +28,7 @@ typedef enum JobStatus
 class Job
 {
 public:
-	vector<int> pid_list_;
+	list<int> pid_list_;
 	int status_;
 	string content_;
 	Job():status_(0){};

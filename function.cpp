@@ -260,7 +260,7 @@ bool Execute(vector<Command> &cmds, string &cmd_line)
 		for (size_t i = 0; i < (fg_job_.pid_list_).size(); i++)
 		{
 			int status;
-			int val = waitpid(pid_list[i], &status,0);
+			int val = waitpid(fg_job_.pid_list_[i], &status,0);
 			if (val <= 0)
 			{
 				fprintf(stderr,"error while wait for pid:%d\n",pid_list[i]);
