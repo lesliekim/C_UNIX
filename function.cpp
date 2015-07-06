@@ -147,7 +147,7 @@ bool Parser(vector<string> &words,vector<Command> &cmds)
 	return true;
 }
 
-bool Execute(vector<Command> &cmds)
+bool Execute(vector<Command> &cmds, string &cmd_line)
 {
 	if (cmds.empty())
 	{
@@ -162,13 +162,16 @@ bool Execute(vector<Command> &cmds)
 		pipe(fd[i]);
 	}
 	
-	vector<int> pid_list;
+	Job job;
+	job.content_ = cmd_line;
+	//vector<int> pid_list;
 	for (int iter = (int)(cmds.size() - 1); iter >= 0; iter--)
 	{
 		int pid = fork();
 		if (pid > 0)// parent
 		{
-			pid_list.push_back(pid);
+			//pid_list.push_back(pid);
+			(job.pid_list_).push_back(pid);
 		}
 		else if(pid == 0)
 		{
@@ -246,21 +249,77 @@ bool Execute(vector<Command> &cmds)
 	}
 	
 	// execution
-	for (size_t i = 0; i < pid_list.size(); i++)
+	if (cmds[0].is_background)
 	{
-		int status;
-		int val = waitpid(pid_list[i], &status,0);
-		if (val <= 0)
+		printf("[%lu] %d\n", bg_job_.size()+1, job.pid_list_[0]);
+		bg_job_.push_back(job);
+	}
+	else
+	{
+		fg_job_ = job;
+		for (size_t i = 0; i < (fg_job_.pid_list_).size(); i++)
 		{
-			fprintf(stderr,"error while wait for pid:%d\n",pid_list[i]);
+			int status;
+			int val = waitpid(pid_list[i], &status,0);
+			if (val <= 0)
+			{
+				fprintf(stderr,"error while wait for pid:%d\n",pid_list[i]);
+			}
 		}
+		fg_job_.pid_list_.clear();
+		fg_job_.status_ = 2;
+		fg_job_.content_ = "";
 		
 	}
-	
 	delete []fd;
 	return true;
 }
 
+void CheckBackgroundList()
+{
+	list<Job>::iterator iter = bg_job_.begin();
+	while(iter != bg_job_.end())
+	{
+		Job job = *iter;
+		if(job.status == 0)// running
+		{
+			while(!job.pid_list_.empty())
+			{
+				int pid = job.pid_list_[0];
+				int status;
+				int val = waitpid(pid, &status, WNOHANG);
+				if (val == 0)// Not finished
+				{
+					break;
+				}
+				else if (val > 0)// finished
+				{
+					fprintf(stderr,"process %d is waited successfully", pid);
+				}
+				else
+				{
+					fprintf(stderr,"waitpid error\n");
+				}
+				job.pid_list_.pop_front();
+			}
+			if (job.pid_list_.empty())
+			{
+				job.status_ = 2;
+				printf("[%d] finished\t\t%s\n",pid,job.content_.c_str());
+				iter = bg_job_.erase(iter);
+			}
+			else
+			{
+				iter++;
+			}
+		}
+		else
+		{
+			iter++;
+		}
+	}
+	
+}
 void PrintWords(vector<string> &words)
 {
 	for (size_t i = 0; i < words.size(); i++)
