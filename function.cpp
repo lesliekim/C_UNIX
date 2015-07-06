@@ -281,7 +281,7 @@ void CheckBackgroundList()
 	while(iter != bg_job_.end())
 	{
 		Job job = *iter;
-		if(job.status == 0)// running
+		if(job.status_ == 0)// running
 		{
 			while(!job.pid_list_.empty())
 			{
@@ -305,7 +305,7 @@ void CheckBackgroundList()
 			if (job.pid_list_.empty())
 			{
 				job.status_ = 2;
-				printf("[%d] finished\t\t%s\n",pid,job.content_.c_str());
+				printf("[%d] finished\t\t%s\n",job.pid_list_[0],job.content_.c_str());
 				iter = bg_job_.erase(iter);
 			}
 			else
