@@ -1,3 +1,4 @@
+#pragma once
 #include <cstdio>
 #include <string>
 #include <cstring>
@@ -30,7 +31,7 @@ class Job
 {
 public:
 	vector<int> pid_list_;
-	int status_;
+	int status_;// 0:running; 1:stopped; 2:finished
 	string content_;
 	Job():status_(0){};
 	

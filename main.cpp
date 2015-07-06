@@ -4,7 +4,7 @@
 #include <vector>
 #include <function.h>
 #include "Readline.h"
-
+#include "CustomCommand.h"
 
 
 using std::string;
@@ -12,6 +12,8 @@ using std::vector;
 int main()
 {
 	Readline handler;
+	
+	custom_command_init();
     
 	while(1)
 	{
@@ -31,7 +33,11 @@ int main()
 			{
 				if (Parser(words,cmds))
 				{
-					Execute(cmds, cmd_line);
+					int flag = custom_command(cmds);
+					if (flag == -1)
+					{
+						Execute(cmds, cmd_line);
+					}
 					CheckBackgroundList();
 				}
 				else

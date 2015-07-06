@@ -9,10 +9,11 @@
 #include <sys/wait.h>
 #include <Command.h>
 #include <fcntl.h>
+#include "CustomCommand.h"
+
 using std::string;
 using std::vector;
 using std::list;
-
 
 bool Lexer(const string &str_, vector<string> &words);
 bool Parser(vector<string> &words,vector<Command> &cmds);
