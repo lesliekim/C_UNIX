@@ -73,11 +73,54 @@ int custom_jobs(vector<string> argv)
 
 int custom_fg(vector<string> argv)
 {
+	if (bg_job_.empty())
+	{
+		printf("No background jobs");
+		return 1;
+	}
+	fg_job_ = bg_job_.back();
+	bg_job_.pop_back();
+	if (fg_job_.status_ == 1)// stopped
+	{	
+		for (size_t i = 0; i < fg_job_.pid_list_.size(); i++)
+		{
+			kill(fg_job_.pid_list_[i], SIGCONT);
+		}
+	}
+	
+	for (size_t i = 0; i < (fg_job_.pid_list_).size(); i++)
+	{
+		int status;
+		int val = waitpid(fg_job_.pid_list_[i], &status,0);
+		if (val <= 0)
+		{
+			fprintf(stderr,"error while wait for pid:%d\n",fg_job_.pid_list_[i]);
+		}
+	}
 	return 0;
 }
 
 int custom_bg(vector<string> argv)
 {
+
+	if (bg_job_.empty())
+	{
+		printf("No background jobs");
+		return 1;
+	}
+	Job &job = bg_job_.back();
+	if (job.status_ == 1)// stopped
+	{	
+		for (size_t i = 0; i < job.pid_list_.size(); i++)
+		{
+			kill(job.pid_list_[i], SIGCONT);
+		}
+		job.status_ = 0;
+	}
+	else
+	{
+		return 1;
+	}
 	return 0;
 }
 

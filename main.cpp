@@ -5,6 +5,7 @@
 #include <function.h>
 #include "Readline.h"
 #include "CustomCommand.h"
+#include "ShortCut.h"
 
 
 using std::string;
@@ -14,6 +15,13 @@ int main()
 	Readline handler;
 	
 	custom_command_init();
+	bind();
+	if (sigsetjmp(jmpbuf_ctrlz,1) != 0)
+	{
+	}
+	if (sigsetjmp(jmpbuf_ctrlc,1) != 0)
+	{
+	}
     
 	while(1)
 	{
