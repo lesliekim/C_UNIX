@@ -140,10 +140,10 @@ bool Parser(vector<string> &words,vector<Command> &cmds)
 		cmds.push_back(cmd);
 		arg_list.clear();
 	}
-	for (size_t j = 0; j < cmds.size(); j++)
-	{
-		PrintCmd(cmds[j]);
-	}
+	//for (size_t j = 0; j < cmds.size(); j++)
+	//{
+	//	PrintCmd(cmds[j]);
+	//}
 	return true;
 }
 
